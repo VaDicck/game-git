@@ -3,6 +3,9 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "game-git"   # Название игры
 
+# Следование камеры
+CAMERA_SPEED = 0.8
+
 # Настройки игрока
 PLAYER_MOVEMENT_SPEED = 3   # Скорость бега
 PLAYER_JUMP_SPEED = 15      # Сила прыжка

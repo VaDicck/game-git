@@ -1,4 +1,6 @@
 import arcade
+
+import constants
 from constants import *
 from arcade.camera import Camera2D
 from sprites import Tux, Platform, CommitScroll
@@ -148,15 +150,13 @@ class GameView(arcade.View):
         self.center_camera_on_player()
 
     def center_camera_on_player(self):
-        if not self.setup_done or self.player is None:
+        if not self.player:
             return
+        camera_speed = constants.CAMERA_SPEED
 
-        screen_center_x = self.player.center_x - (SCREEN_WIDTH / 2)
-        screen_center_y = self.player.center_y - (SCREEN_HEIGHT / 2)
+        current_x, current_y = self.camera.position
 
-        if screen_center_x < 0:
-            screen_center_x = 0
-        if screen_center_y < 0:
-            screen_center_y = 0
+        new_x = current_x + ( self.player.center_x - current_x) * camera_speed
+        new_y = current_y + (self.player.center_y - current_y) * camera_speed
 
-        self.camera.position = (screen_center_x, screen_center_y)
+        self.camera.position = (new_x, new_y)
