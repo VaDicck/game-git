@@ -1,7 +1,7 @@
 import arcade
 from constants import *
-from sprites import Tux, Platform
 from arcade.camera import Camera2D
+from sprites import Tux, Platform, CommitScroll
 
 
 class GameView(arcade.View):
@@ -13,6 +13,7 @@ class GameView(arcade.View):
         self.platform_list = None
         self.wall_list = None
         self.player_list = None
+        self.commit_list = None
 
         self.physics_engine = None
 
@@ -34,8 +35,19 @@ class GameView(arcade.View):
         self.player_list = arcade.SpriteList()
         self.player_list.append(self.player)
 
-        # Создаём список платформ
         self.platform_list = arcade.SpriteList()
+
+        self.commit_list = arcade.SpriteList()
+
+        commit_positions = [
+            (200, 300),
+            (400, 400),
+            (600, 500),
+        ]
+
+        for x, y in commit_positions:
+            scroll = CommitScroll(x, y)
+            self.commit_list.append(scroll)
 
         # Создаём пол
         for x in range(0, SCREEN_WIDTH, 64):
@@ -77,6 +89,7 @@ class GameView(arcade.View):
 
         with self.camera.activate():
             self.platform_list.draw()
+            self.commit_list.draw()  # ← новое
             self.player_list.draw()
 
         arcade.draw_text(
@@ -118,6 +131,14 @@ class GameView(arcade.View):
     def on_update(self, delta_time):
         if not self.setup_done or self.physics_engine is None:
             return
+
+        hit_list = arcade.check_for_collision_with_list(
+            self.player, self.commit_list
+        )
+
+        for scroll in hit_list:
+            scroll.remove_from_sprite_lists()
+            self.player.commits_collected += 1
 
         # Двигаем физику
         self.physics_engine.update()
